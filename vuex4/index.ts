@@ -48,6 +48,7 @@ interface ModuleTree<R> {
 }
 
 interface Module<S, R> {
+  namespaced?: boolean,
   state?: S,
   getters?: GetterTree<S, R>,
   mutations?: MutationTree<S>,
