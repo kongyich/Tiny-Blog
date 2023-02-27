@@ -25,6 +25,18 @@ interface StoreOptions<S> {
   actions?: ActionTree<S, S>
 }
 
+interface ModuleTree<R> {
+  [key: string]: Module<any, R>
+}
+
+interface Module<S, R> {
+  state?: S,
+  getters?: GetterTree<S, R>,
+  mutations?: MutationTree<S>,
+  actions?: ActionTree<S, R>,
+  modules?: ModuleTree<R>
+}
+
 // ActionTree
 interface ActionTree<S, R> {
   [K: string]: Action<S, R>
