@@ -18,6 +18,24 @@ class TinyStore<S = any> {
   }
 }
 
+class ModuleWrapper<S, R> {
+  children: Record<string, ModuleWrapper<any, R>> = {}
+  rawModule: Module<any, R>
+  state: S
+  namespaced: boolean
+  constructor(rawModule_: Module<any, R>) {
+    this.rawModule = rawModule_
+    this.state = rawModule_.state || Object.create(null)
+    this.namespaced = rawModule_.namespaced || false
+  }
+  addChild(key: string, moduleWrapper: ModuleWrapper<any, R>) {
+    this.children[key] = moduleWrapper
+  }
+  getChild(key: string) {
+    return this.children[key]
+  }
+}
+
 interface StoreOptions<S> {
   state?: S,
   getters?: GetterTree<S, S>,
