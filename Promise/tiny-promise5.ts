@@ -1,11 +1,11 @@
-import { FulFillType, RejectType, ExecutorType, PROMISESTATUS } from './actionsTypes'
+import { Resolve, Reject, ExecutorType, onFulfilled, onRejected, PROMISESTATUS } from './actionsTypes'
 import { isFunction, isPromise } from './utils'
 
 export default class TinyPromise<T = any> {
-  private _status = PROMISESTATUS.PENDING
-  private _value: any
-  private _fulfilledQueues: Function[] = []
-  private _rejectedQueues: Function[] = []
+  public _status: PROMISESTATUS = PROMISESTATUS.PENDING
+  public _value!: T
+  private _fulfilledQueues: Resolve[] = []
+  private _rejectedQueues: Reject[] = []
 
   constructor(executor: ExecutorType<T>) {
     try {
@@ -15,7 +15,7 @@ export default class TinyPromise<T = any> {
     }
   }
 
-  _resolve(resolveValue: any) {
+  private _resolve: Resolve<T> = (resolveValue) => {
     const run = () => {
       if (this._status !== PROMISESTATUS.PENDING) return
 
@@ -44,7 +44,7 @@ export default class TinyPromise<T = any> {
           runRejected(err)
         })
       } else {
-        this._value = resolveValue
+        this._value = resolveValue as T
         this._status = PROMISESTATUS.FULFILLED
         runFulfilled(resolveValue)
       }
@@ -52,7 +52,7 @@ export default class TinyPromise<T = any> {
     setTimeout(run, 0);
   }
 
-  _reject(error: any) {
+  private _reject: Reject = (error) => {
     if (this._status !== PROMISESTATUS.PENDING) return
 
     const run = () => {
@@ -66,7 +66,8 @@ export default class TinyPromise<T = any> {
     setTimeout(run, 0)
   }
 
-  then(resolveInThen: FulFillType, rejectinThen: RejectType) {
+  public then<TRes1 = T, TRes2 = never>(resolveInThen?: onFulfilled<T, TRes1>, rejectinThen?: onRejected<TRes2>):
+    TinyPromise<TRes1 | TRes2> {
     const {
       _value,
       _status
@@ -92,11 +93,11 @@ export default class TinyPromise<T = any> {
 
       const rejected = (error: any) => {
         try {
-          if (!isFunction(resolveInThen)) {
-            resolveNext(error)
+          if (!isFunction(rejectinThen)) {
+            rejectNext(error)
           } else {
-            let res = resolveInThen(error);
-            if (isPromise(resolveInThen)) {
+            let res = rejectinThen(error);
+            if (isPromise(res)) {
               res.then(resolveNext, rejectNext)
             } else {
               resolveNext(res)
@@ -105,8 +106,6 @@ export default class TinyPromise<T = any> {
         } catch (error) {
           rejectNext(error)
         }
-        let res = rejectinThen(error);
-        rejectNext(res)
       }
 
       switch (_status) {
@@ -124,41 +123,46 @@ export default class TinyPromise<T = any> {
     })
   }
 
-  catch(onRejected: any) {
-    return this.then(() => { }, onRejected)
+  catch<TRes>(onRejected: onRejected<TRes>): TinyPromise<T | TRes> {
+    return this.then(null, onRejected)
   }
 
-  static resolve(value: any) {
-    if (isPromise(value)) return value
-    return new TinyPromise(resolve => resolve(value))
+  static resolve<T>(value: T | PromiseLike<T>): TinyPromise<T> {
+    if (isPromise(value)) {
+      return value;
+    }
+
+    return new TinyPromise(resolve => {
+      resolve(value);
+    });
   }
 
-  static reject(error: any) {
+  static reject<T = never>(error: any): TinyPromise<T> {
     return new TinyPromise((resolve, reject) => reject(error))
   }
 
-  static all(list: any[]) {
+  static all<T>(list: T[]): TinyPromise<T[]> {
     let values: any[] = []
     let count = 0
     return new TinyPromise((resolve, reject) => {
       for (let [k, v] of list.entries()) {
-        this.resolve(v).then((res) => {
+        this.resolve(v).then((res: any) => {
           values[k] = res
           count++
           if (count === list.length) return resolve(values)
-        }, (err) => {
+        }, (err: any) => {
           reject(err)
         })
       }
     })
   }
 
-  static race(list: any[]) {
+  static race<T>(list: T[]): TinyPromise<T extends PromiseLike<infer U> ? U : T> {
     return new TinyPromise((resolve, reject) => {
       for (let p of list) {
-        this.resolve(p).then((res) => {
+        this.resolve(p).then((res: any) => {
           resolve(res)
-        }, (err) => {
+        }, (err: any) => {
           reject(err)
         })
       }
@@ -166,35 +170,47 @@ export default class TinyPromise<T = any> {
   }
 }
 
-
-let p1 = function () {
-  return new TinyPromise((resolve) => {
-    resolve('p1')
+new TinyPromise((reslove) => {
+  reslove('hello')
+})
+  .then()
+  .then()
+  .then()
+  .then((res) => {
+    console.log(res) // 'hello'
   })
-}
 
-let p2 = function () {
-  return new TinyPromise((resolve) => {
-    setTimeout(() => {
-      resolve('p2')
-    }, 2000)
-  })
-}
 
-let p3 = function () {
-  return new TinyPromise((resolve) => {
-    setTimeout(() => {
-      resolve('p3')
-    }, 1000)
-  })
-}
+// let p1 = function () {
+//   return new TinyPromise((resolve) => {
+//     resolve('p1')
+//   })
+// }
 
-let list = [
-  p1(),
-  p2(),
-  p3()
-]
+// let p2 = function () {
+//   return new TinyPromise((resolve, reject) => {
+//     setTimeout(() => {
+//       reject('p2')
+//     }, 2000)
+//   })
+// }
 
-TinyPromise.all(list).then((val) => {
-  console.log('Success', val)
-}, err => { })
+// let p3 = function () {
+//   return new TinyPromise((resolve) => {
+//     setTimeout(() => {
+//       resolve('p3')
+//     }, 1000)
+//   })
+// }
+
+// let list = [
+//   p1(),
+//   p2(),
+//   p3()
+// ]
+
+// TinyPromise.race(list).then((val) => {
+//   console.log('Success', val)
+// }, err => { 
+//   console.log('error', err)
+// })
