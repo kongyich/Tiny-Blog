@@ -1,4 +1,4 @@
-import { FulFillType, RejectType, ExecutorType, PROMISESTATUS } from './actionsTypes'
+import { ExecutorType, PROMISESTATUS, onFulfilled } from './actionsTypes'
 import { isFunction, isPromise } from './utils'
 
 export default class TinyPromise<T = any> {
@@ -16,8 +16,8 @@ export default class TinyPromise<T = any> {
   }
 
   _resolve(resolveValue: any) {
-    if(this._status !== PROMISESTATUS.PENDING) return
 
+    if(this._status !== PROMISESTATUS.PENDING) return
     const runFulfilled = (value: any) => {
       let cb;
       while(cb = this._fulfilledQueues.shift()) {
@@ -29,8 +29,8 @@ export default class TinyPromise<T = any> {
     this._status = PROMISESTATUS.FULFILLED
     runFulfilled(resolveValue)
   }
-  
   _reject(error: any) {
+
     this._status = PROMISESTATUS.REJECTED
     this._value = error
     let cb;
@@ -39,7 +39,7 @@ export default class TinyPromise<T = any> {
     }
   }
 
-  then(resolveInThen: FulFillType, rejectinThen: RejectType) {
+  then(resolveInThen?: any, rejectinThen?: any) {
     const {
       _value,
       _status
@@ -48,11 +48,11 @@ export default class TinyPromise<T = any> {
 
       const fulfilled = (val: any) => {
         try {
-          if(!isFunction(resolveInThen)) {
+          if (!isFunction(resolveInThen)) {
             resolveNext(val)
           } else {
             let res = resolveInThen(val);
-            if(isPromise(res)) {
+            if (isPromise(res)) {
               res.then(resolveNext, rejectNext)
             } else {
               resolveNext(res)
@@ -65,11 +65,11 @@ export default class TinyPromise<T = any> {
 
       const rejected = (error: any) => {
         try {
-          if (!isFunction(resolveInThen)) {
-            resolveNext(error)
+          if (!isFunction(rejectinThen)) {
+            rejectNext(error)
           } else {
-            let res = resolveInThen(error);
-            if (isPromise(resolveInThen)) {
+            let res = rejectinThen(error);
+            if (isPromise(res)) {
               res.then(resolveNext, rejectNext)
             } else {
               resolveNext(res)
@@ -78,8 +78,6 @@ export default class TinyPromise<T = any> {
         } catch (error) {
           rejectNext(error)
         }
-        let res = rejectinThen(error);
-        rejectNext(res)
       }
 
       switch(_status) {
@@ -98,19 +96,30 @@ export default class TinyPromise<T = any> {
   }
 }
 
-
-let p = new TinyPromise((res) => {
-  setTimeout(() => {
-    res('async p1')
-  }, 1000)
-}).then((val)=>{
-  console.log(val, '1');
+// let p1 = new TinyPromise((res) => {
+//   setTimeout(() => {
+//     res('第一个异步Promise')
+//   }, 1000)
+// }).then((val: any)=>{
+//   console.log(val, '第一个then');
   
-  return new TinyPromise((res, rej) => {
-    setTimeout(() => {
-      res('async p2')
-    }, 1000)
+//   return new TinyPromise((res, rej) => {
+//     setTimeout(() => {
+//       res('第二个异步Promise')
+//     }, 1000)
+//   })
+// }, () => {}).then((val: any)=>{
+//   console.log(val, '第二个then');
+// }, () => {})
+
+new TinyPromise((reslove) => {
+  reslove('hello')
+})
+  .then()
+  .then()
+  .then()
+  .then((res: any) => {
+    console.log(res) // 'hello'
   })
-}, () => {}).then((val)=>{
-  console.log(val, '2');
-}, () => {})
+
+export {}

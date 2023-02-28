@@ -1,4 +1,3 @@
-
 type Resolve<T = any> = (resolveValue: T | PromiseLike<T>) => void
 type Reject = (rejectValue: any) => void
 

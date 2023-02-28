@@ -1,4 +1,4 @@
-import { FulFillType, RejectType, ExecutorType, PROMISESTATUS } from './actionsTypes'
+import { ExecutorType, PROMISESTATUS, onFulfilled } from './actionsTypes'
 
 export default class TinyPromise<T = any> {
   private _status = PROMISESTATUS.PENDING
@@ -15,9 +15,8 @@ export default class TinyPromise<T = any> {
   }
 
   _resolve(resolveValue: any) {
+
     if(this._status !== PROMISESTATUS.PENDING) return
-    // this._status = PROMISESTATUS.FULFILLED
-    // this._value = resolveValue
     const runFulfilled = (value: any) => {
       let cb;
       while(cb = this._fulfilledQueues.shift()) {
@@ -30,8 +29,6 @@ export default class TinyPromise<T = any> {
     runFulfilled(resolveValue)
   }
   _reject(error: any) {
-    // this._status = PROMISESTATUS.REJECTED
-    // this._value = error
 
     this._status = PROMISESTATUS.REJECTED
     this._value = error
@@ -41,7 +38,7 @@ export default class TinyPromise<T = any> {
     }
   }
 
-  then(resolveInThen: FulFillType, rejectinThen: RejectType) {
+  then(resolveInThen: any, rejectinThen: any) {
     const {
       _value,
       _status
@@ -70,28 +67,18 @@ export default class TinyPromise<T = any> {
           rejected(_value)
         break
       }
-
-      // if(_status === PROMISESTATUS.FULFILLED) {
-      //   let result = resolveInThen(_value)
-      //   resolve(result)
-      // }
-
-      // if(_status === PROMISESTATUS.REJECTED) {
-      //   let result = rejectinThen(_value)
-      //   resolve(result)
-      // }
     })
   }
 }
 
-
 let p = new TinyPromise((res) => {
   setTimeout(() => {
-    res('p')
+    res('小黄瓜')
   }, 1000);
-}).then((val)=>{
-  console.log(val, '1');
-  return val
-}, () => {}).then((val)=>{
-  console.log(val, '2');
+}).then((val: any)=>{
+  console.log(val, '第一个异步函数');
+  return '小南瓜'
+}, () => {}).then((val: any)=>{
+  console.log(val, '第二个异步函数');
 }, () => {})
+export {}

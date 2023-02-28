@@ -1,4 +1,4 @@
-import { FulFillType, RejectType, ExecutorType, PROMISESTATUS } from './actionsTypes'
+import { ExecutorType, PROMISESTATUS } from './actionsTypes'
 import { isFunction, isPromise } from './utils'
 
 export default class TinyPromise<T = any> {
@@ -66,7 +66,7 @@ export default class TinyPromise<T = any> {
     setTimeout(run, 0)
   }
 
-  then(resolveInThen: FulFillType, rejectinThen: RejectType) {
+  then(resolveInThen: any, rejectinThen: any) {
     const {
       _value,
       _status
@@ -132,7 +132,7 @@ let p = new TinyPromise((res) => {
     })
     res(t)
   }, 1000)
-}).then((val) => {
+}).then((val:any) => {
   console.log(val, '1');
 
   return new TinyPromise((res, rej) => {
@@ -140,6 +140,8 @@ let p = new TinyPromise((res) => {
       res('async p2')
     }, 1000)
   })
-}, () => { }).then((val) => {
+}, () => { }).then((val: any) => {
   console.log(val, '2');
 }, () => { })
+
+export {}

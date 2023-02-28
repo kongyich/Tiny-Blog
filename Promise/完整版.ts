@@ -3,7 +3,7 @@ import { isFunction, isPromise } from './utils'
 
 export default class TinyPromise<T = any> {
   public _status: PROMISESTATUS = PROMISESTATUS.PENDING
-  public _value!: T
+  public _value!: T | PromiseLike<T>
   private _fulfilledQueues: Resolve[] = []
   private _rejectedQueues: Reject[] = []
 
@@ -44,7 +44,7 @@ export default class TinyPromise<T = any> {
           runRejected(err)
         })
       } else {
-        this._value = resolveValue as T
+        this._value = resolveValue
         this._status = PROMISESTATUS.FULFILLED
         runFulfilled(resolveValue)
       }
@@ -170,47 +170,39 @@ export default class TinyPromise<T = any> {
   }
 }
 
-new TinyPromise((reslove) => {
-  reslove('hello')
-})
-  .then()
-  .then()
-  .then()
-  .then((res) => {
-    console.log(res) // 'hello'
+let p = new TinyPromise((res) => {
+  setTimeout(() => {
+    let t = new TinyPromise((res2, rej2) => {
+      res2('异步1')
+    })
+    res(t)
+  }, 1000)
+}).then((val:any) => {
+  console.log(val, '1');
+
+  return new TinyPromise((res, rej) => {
+    setTimeout(() => {
+      res('异步2')
+    }, 1000)
   })
+}, () => { }).then((val: any) => {
+  console.log(val, '2');
+}, () => { })
 
+export {}
 
-// let p1 = function () {
-//   return new TinyPromise((resolve) => {
-//     resolve('p1')
-//   })
-// }
-
-// let p2 = function () {
-//   return new TinyPromise((resolve, reject) => {
+// let p = new TinyPromise((res) => {
+//   setTimeout(() => {
+//     res('第一个异步Promise')
+//   }, 1000)
+// }).then((val: any)=>{
+//   console.log(val, '第一个then');
+  
+//   return new TinyPromise((res, rej) => {
 //     setTimeout(() => {
-//       reject('p2')
-//     }, 2000)
-//   })
-// }
-
-// let p3 = function () {
-//   return new TinyPromise((resolve) => {
-//     setTimeout(() => {
-//       resolve('p3')
+//       res('第二个异步Promise')
 //     }, 1000)
 //   })
-// }
-
-// let list = [
-//   p1(),
-//   p2(),
-//   p3()
-// ]
-
-// TinyPromise.race(list).then((val) => {
-//   console.log('Success', val)
-// }, err => { 
-//   console.log('error', err)
-// })
+// }, () => {}).then((val: any)=>{
+//   console.log(val, '第二个then');
+// }, () => {})

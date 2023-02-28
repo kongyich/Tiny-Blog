@@ -1,4 +1,4 @@
-import { FulFillType, RejectType, ExecutorType, PROMISESTATUS } from './actionsTypes'
+import { Resolve, Reject, ExecutorType, PROMISESTATUS } from './actionsTypes'
 
 export default class TinyPromise<T = any> {
   private _status = PROMISESTATUS.PENDING
@@ -21,8 +21,7 @@ export default class TinyPromise<T = any> {
     this._value = error
   }
 
-  then(resolveInThen: FulFillType, rejectinThen: RejectType) {
-
+  public then(resolveInThen: Resolve, rejectinThen: Reject) {
     const {
       _value,
       _status
@@ -35,24 +34,13 @@ export default class TinyPromise<T = any> {
     if(_status === PROMISESTATUS.REJECTED) {
       rejectinThen(_value)
     }
-    
-    // return new TinyPromise((resolve, reject) => {
-    //   if(_status === PROMISESTATUS.FULFILLED) {
-    //     let result = resolveInThen(_value)
-    //     resolve(result)
-    //   }
-
-    //   if(_status === PROMISESTATUS.REJECTED) {
-    //     let result = rejectinThen(_value)
-    //     resolve(result)
-    //   }
-    // })
   }
 }
-
 
 let p = new TinyPromise((res) => {
   res('haha')
 }).then((val)=>{
   console.log(val, 'valll');
 }, () => {})
+
+export {}
