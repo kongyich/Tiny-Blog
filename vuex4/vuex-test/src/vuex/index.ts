@@ -2,9 +2,9 @@ import { App, inject } from 'vue'
 
 const injectKey = "store"
 
-export function useStore<S>(): TinyStore<S> {
-  return inject(injectKey)
-}
+// export function useStore<S>(): TinyStore<S> {
+//   return inject(injectKey)
+// }
 
 export function createStore<S>(options: StoreOptions<S>) {
   return new TinyStore<S>(options)
