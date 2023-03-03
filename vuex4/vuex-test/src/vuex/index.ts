@@ -40,7 +40,7 @@ interface StoreOptions<S> {
   state?: S,
   getters?: GetterTree<S, S>,
   mutations?: MutationTree<S>,
-  actions?: ActionTree<S, S>
+  actions?: ActionTree<S, S>,
 }
 
 interface ModuleTree<R> {
