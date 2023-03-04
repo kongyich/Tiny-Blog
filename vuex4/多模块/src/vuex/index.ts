@@ -31,10 +31,6 @@ class TinyStore<S = any> {
     this.dispatch = function boundDispatch(type: string, payload: any) {
       dispatch.call(store, type, payload)
     }
-
-    // 注册模块
-    const rootState = this.moduleCollection.root.state
-    installModule(store, rootState, [], this.moduleCollection.root)
   }
 
   install(app: App) {
@@ -54,11 +50,6 @@ class TinyStore<S = any> {
     if (!this.actions[type]) throw new Error('[vuex] unknown actions type: ' + type)
     this.actions[type](payload)
   }
-}
-
-// 模块注册 getter actions mutations
-function installModule<R>(store: TinyStore<R>, rootState_: R, path: string[], module: ModuleWrapper<any, R>) {
-
 }
 
 class ModuleWrapper<S, R> {
