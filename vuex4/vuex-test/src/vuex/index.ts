@@ -19,7 +19,9 @@ class TinyStore<S = any> {
   constructor(options: StoreOptions<S>) {
     this.moduleCollection = new ModuleCollection<S>(options)
 
+    // eslint-disable-next-line
     const store = this
+    // eslint-disable-next-line
     const ref = this
     const commit = ref.commit_
     const dispatch = ref.dispatch_
@@ -40,10 +42,12 @@ class TinyStore<S = any> {
   }
 
   commit_(type: string, payload: any) {
+    if (!this.mutations[type]) throw new Error('[vuex] unknown mutations type: ' + type)
     this.mutations[type](payload)
   }
 
   dispatch_(type: string, payload: any) {
+    if (!this.actions[type]) throw new Error('[vuex] unknown actions type: ' + type)
     this.actions[type](payload)
   }
 }
