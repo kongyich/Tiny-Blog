@@ -98,9 +98,9 @@ class ModuleCollection<R> {
 }
 
 class Util {
-  static forEachValue(obj: object, fn: (...args: any) => void) {
+  static forEachValue(obj: Record<string, any>, fn: (...args: any) => void) {
     Object.keys(obj).forEach(key => {
-      fn(key, (obj as any)[key])
+      fn(key, obj[key])
     })
   }
 }
