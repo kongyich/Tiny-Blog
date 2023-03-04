@@ -78,8 +78,11 @@ class ModuleCollection<R> {
 
     if (rawModule.modules) {
       const { modules: sonModules } = rawModule
-      Object.keys(sonModules).forEach(moduleName => {
-        this.register(path.concat(moduleName), sonModules[moduleName])
+      // Object.keys(sonModules).forEach(moduleName => {
+      //   this.register(path.concat(moduleName), sonModules[moduleName])
+      // })
+      Util.forEachValue(sonModules, (key: string, modules: Module<any, R>) => {
+        this.register(path.concat(key), modules)
       })
     }
   }
@@ -91,6 +94,14 @@ class ModuleCollection<R> {
       console.log(key, 'key')
       return moduleWrapper.getChild(key)
     }, module)
+  }
+}
+
+class Util {
+  static forEachValue(obj: object, fn: (...args: any) => void) {
+    Object.keys(obj).forEach(key => {
+      fn(key, (obj as any)[key])
+    })
   }
 }
 
