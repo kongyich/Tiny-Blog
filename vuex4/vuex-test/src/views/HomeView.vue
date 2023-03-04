@@ -12,6 +12,7 @@ export default defineComponent({
   name: 'HomeView',
   setup() {
     const store = useStore<RootState>()
+    console.log(store, '<----store')
     return {
       store
     }

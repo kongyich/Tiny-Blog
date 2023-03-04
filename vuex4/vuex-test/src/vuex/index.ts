@@ -44,11 +44,54 @@ class ModuleWrapper<S, R> {
 }
 
 class ModuleCollection<R> {
-  root: ModuleWrapper<any, R>
+  root!: ModuleWrapper<any, R>
   constructor(rawRootModule: Module<any, R>) {
-    this.root = new ModuleWrapper(rawRootModule)
+    // this.root = new ModuleWrapper(rawRootModule)
+    // this.register([], this.root)
+    this.register([], rawRootModule)
   }
-  register() { }
+  register(path: string[], rawModule: Module<any, R>) {
+    // if (rawModule.rawModule.modules) {
+    //   const modulesKeys = Object.keys(rawModule.rawModule.modules)
+    //   modulesKeys.forEach(key => {
+    //     rawModule.addChild(key, new ModuleWrapper(rawModule.rawModule.modules![key]))
+    //   })
+    // }
+
+    // const childKeys = Object.keys(rawModule.children)
+    // if (childKeys.length !== 0) {
+    //   childKeys.forEach(ele => {
+    //     this.register([], rawModule.children[ele])
+    //   })
+    // }
+
+    const newModule = new ModuleWrapper(rawModule)
+    if (path.length === 0) {
+      this.root = newModule
+    } else {
+      // 添加子模块 - > 父模块 children
+      // 获取父级的moduleWrapper对象
+      const parentModule: ModuleWrapper<any, R> = this.get(path.slice(0, -1))
+      // 添加到父级模块的children
+      parentModule.addChild(path[path.length - 1], newModule)
+    }
+
+    if (rawModule.modules) {
+      const { modules: sonModules } = rawModule
+      Object.keys(sonModules).forEach(moduleName => {
+        this.register(path.concat(moduleName), sonModules[moduleName])
+      })
+    }
+  }
+  // rootmodule foodModule detailModule
+  // ['food', 'detail']
+  get(path: string[]) {
+    const module = this.root
+    return path.reduce((moduleWrapper: ModuleWrapper<AnalyserNode, R>, key: string) => {
+      console.log(key, 'key')
+      return moduleWrapper.getChild(key)
+    }, module)
+  }
 }
 
 interface StoreOptions<S> {

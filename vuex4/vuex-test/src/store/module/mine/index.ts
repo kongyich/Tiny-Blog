@@ -1,6 +1,7 @@
 import { state, IState } from './state'
 import { RootState } from '@/store/rootState'
 import { Module } from '@/vuex/index';
+import { foodModule } from '@/store/module/food'
 
 export const mineModule: Module<IState, RootState> = {
   namespaced: true,
@@ -14,6 +15,9 @@ export const mineModule: Module<IState, RootState> = {
     modifyNavList(state, navList) {
       return state.typeList = navList
     }
+  },
+  modules: {
+    foodModule: foodModule
   },
   actions: {
     handlerNavList({ commit }) {
