@@ -2,19 +2,26 @@ import { App, inject } from 'vue'
 
 const injectKey = "store"
 
-// export function useStore<S>(): TinyStore<S> {
-//   return inject(injectKey)
-// }
+export function useStore<S>(): TinyStore<S> {
+  return inject(injectKey) as any
+}
 
 export function createStore<S>(options: StoreOptions<S>) {
   return new TinyStore<S>(options)
 }
 
 class TinyStore<S = any> {
-  constructor(options: StoreOptions<S>) { }
+  moduleCollection: ModuleCollection<S>
+  constructor(options: StoreOptions<S>) {
+    this.moduleCollection = new ModuleCollection<S>(options)
+  }
 
   install(app: App) {
     app.provide(injectKey, this)
+  }
+
+  test() {
+    return 'is a test'
   }
 }
 
@@ -36,19 +43,27 @@ class ModuleWrapper<S, R> {
   }
 }
 
+class ModuleCollection<R> {
+  root: ModuleWrapper<any, R>
+  constructor(rawRootModule: Module<any, R>) {
+    this.root = new ModuleWrapper(rawRootModule)
+  }
+  register() { }
+}
+
 interface StoreOptions<S> {
   state?: S,
   getters?: GetterTree<S, S>,
   mutations?: MutationTree<S>,
   actions?: ActionTree<S, S>,
-  module?: ModuleTree<S>
+  modules?: ModuleTree<S>
 }
 
 interface ModuleTree<R> {
   [key: string]: Module<any, R>
 }
 
-interface Module<S, R> {
+export interface Module<S, R> {
   namespaced?: boolean,
   state?: S,
   getters?: GetterTree<S, R>,

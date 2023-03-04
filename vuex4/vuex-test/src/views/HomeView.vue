@@ -7,7 +7,7 @@
 <script lang="ts">
 import { RootState } from '../store/rootState';
 import { defineComponent } from 'vue';
-import { useStore } from '../vuex/indexSingle';
+import { useStore } from '../vuex/index';
 export default defineComponent({
   name: 'HomeView',
   setup() {

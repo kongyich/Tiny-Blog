@@ -1,17 +1,18 @@
-import { createStore } from '../vuex/indexSingle'
+import { state, IState } from './state'
+import { RootState } from '@/store/rootState'
+import { Module } from '@/vuex/index';
 
-export default createStore({
-  state: {
-    navList: ['这是一个测试', 'ok']
-  },
+export const mineModule: Module<IState, RootState> = {
+  namespaced: true,
+  state,
   getters: {
     showNavList(state) {
-      return state.navList
+      return state.typeList
     }
   },
   mutations: {
     modifyNavList(state, navList) {
-      return state.navList = navList
+      return state.typeList = navList
     }
   },
   actions: {
@@ -22,4 +23,4 @@ export default createStore({
       }, 600)
     }
   }
-})
+}
