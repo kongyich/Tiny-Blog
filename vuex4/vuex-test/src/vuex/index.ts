@@ -12,8 +12,23 @@ export function createStore<S>(options: StoreOptions<S>) {
 
 class TinyStore<S = any> {
   moduleCollection: ModuleCollection<S>
+  mutations: Record<string, any> = {}
+  actions: Record<string, any> = {}
+  commit: Commit
+  dispatch: Dispatch
   constructor(options: StoreOptions<S>) {
     this.moduleCollection = new ModuleCollection<S>(options)
+
+    const store = this
+    const ref = this
+    const commit = ref.commit_
+    const dispatch = ref.dispatch_
+    this.commit = function boundCommit(type: string, payload: any) {
+      commit.call(store, type, payload)
+    }
+    this.dispatch = function boundDispatch(type: string, payload: any) {
+      dispatch.call(store, type, payload)
+    }
   }
 
   install(app: App) {
@@ -22,6 +37,14 @@ class TinyStore<S = any> {
 
   test() {
     return 'is a test'
+  }
+
+  commit_(type: string, payload: any) {
+    this.mutations[type](payload)
+  }
+
+  dispatch_(type: string, payload: any) {
+    this.actions[type](payload)
   }
 }
 
