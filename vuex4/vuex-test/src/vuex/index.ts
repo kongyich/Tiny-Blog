@@ -64,6 +64,9 @@ function installModule<R>(store: TinyStore<R>, rootState_: R, path: string[], mo
 
   const nameSpace = store.moduleCollection.getNameSpace(path)
   console.log('nameSpace', nameSpace)
+
+  // 解决直接使用commit，路径错误
+  const actionContext: ActionContext<any, R> = makeLocalContext(store, nameSpace)
   // 如果不是根模块
   if (!isRoot) {
     // 1. 拿到父级的state
@@ -96,9 +99,20 @@ function installModule<R>(store: TinyStore<R>, rootState_: R, path: string[], mo
   module.forEachAction((action, key) => {
     const nameSpaceType = nameSpace + key
     store.actions[nameSpaceType] = (payload: any) => {
-      action.call(store, { commit: store.commit }, payload)
+      action.call(store, { commit: actionContext.commit }, payload)
     }
   })
+}
+
+function makeLocalContext<R>(store: TinyStore<R>, nameSpace: string) {
+  const noNameSpace = nameSpace === ''
+  const actionContext: ActionContext<any, R> = {
+    commit: noNameSpace ? store.commit : (type, payload) => {
+      type = nameSpace + type
+      store.commit(type, payload)
+    }
+  }
+  return actionContext
 }
 
 function getParentState<R>(rootState: R, path: string[]) {
