@@ -92,6 +92,13 @@ function installModule<R>(store: TinyStore<R>, rootState_: R, path: string[], mo
       matation.call(store, module.state, payload)
     }
   })
+
+  module.forEachAction((action, key) => {
+    const nameSpaceType = nameSpace + key
+    store.actions[nameSpaceType] = (payload: any) => {
+      action.call(store, { commit: store.commit }, payload)
+    }
+  })
 }
 
 function getParentState<R>(rootState: R, path: string[]) {
@@ -138,8 +145,14 @@ class ModuleWrapper<S, R> {
       Util.forEachValue(this.rawModule.mutations, fn)
     }
   }
+  forEachAction(fn: ActionToKey<S, R>) {
+    if (this.rawModule.actions) {
+      Util.forEachValue(this.rawModule.actions, fn)
+    }
+  }
 }
 
+type ActionToKey<S, R> = (action: Action<S, R>, key: string) => any
 type MutationToKey<S> = (mutation: Mutation<S>, key: string) => any
 type GetterToKey<R> = (getter: Getter<any, R>, key: string) => any
 type ChildMdleWraperToKey<R> = (moduleWrapper: ModuleWrapper<any, R>, key: string) => void
@@ -251,9 +264,9 @@ interface GetterTree<S, R> {
 }
 
 interface ActionContext<S, R> {
-  dispatch: Dispatch,
+  dispatch?: Dispatch,
   commit: Commit,
-  state: S
+  state?: S
 }
 
 type Dispatch = (type: string, payload: any) => any
