@@ -85,6 +85,13 @@ function installModule<R>(store: TinyStore<R>, rootState_: R, path: string[], mo
       }
     })
   })
+
+  module.forEachMutation((matation, key) => {
+    const nameSpaceType = nameSpace + key
+    store.mutations[nameSpaceType] = (payload: any) => {
+      matation.call(store, module.state, payload)
+    }
+  })
 }
 
 function getParentState<R>(rootState: R, path: string[]) {
@@ -110,19 +117,30 @@ class ModuleWrapper<S, R> {
     return this.children[key]
   }
   forEachChild(fn: ChildMdleWraperToKey<R>) {
-    Object.keys(this.children).forEach(key => {
-      fn(this.children[key], key)
-    })
+    // Object.keys(this.children).forEach(key => {
+    //   fn(this.children[key], key)
+    // })
+    Util.forEachValue(this.children, fn)
   }
   forEachGetter(fn: GetterToKey<R>) {
     if (this.rawModule.getters) {
-      Object.keys(this.rawModule.getters).forEach(key => {
-        fn(this.rawModule.getters![key], key)
-      })
+      // Object.keys(this.rawModule.getters).forEach(key => {
+      //   fn(this.rawModule.getters![key], key)
+      // })
+      Util.forEachValue(this.rawModule.getters, fn)
+    }
+  }
+  forEachMutation(fn: MutationToKey<S>) {
+    if (this.rawModule.mutations) {
+      // Object.keys(this.rawModule.mutations).forEach(key => {
+      //   fn(this.rawModule.mutations![key], key)
+      // })
+      Util.forEachValue(this.rawModule.mutations, fn)
     }
   }
 }
 
+type MutationToKey<S> = (mutation: Mutation<S>, key: string) => any
 type GetterToKey<R> = (getter: Getter<any, R>, key: string) => any
 type ChildMdleWraperToKey<R> = (moduleWrapper: ModuleWrapper<any, R>, key: string) => void
 
@@ -164,7 +182,7 @@ class ModuleCollection<R> {
       // Object.keys(sonModules).forEach(moduleName => {
       //   this.register(path.concat(moduleName), sonModules[moduleName])
       // })
-      Util.forEachValue(sonModules, (key: string, modules: Module<any, R>) => {
+      Util.forEachValue(sonModules, (modules: Module<any, R>, key: string) => {
         this.register(path.concat(key), modules)
       })
     }
@@ -191,7 +209,7 @@ class ModuleCollection<R> {
 class Util {
   static forEachValue(obj: Record<string, any>, fn: (...args: any) => void) {
     Object.keys(obj).forEach(key => {
-      fn(key, obj[key])
+      fn(obj[key], key)
     })
   }
 }
