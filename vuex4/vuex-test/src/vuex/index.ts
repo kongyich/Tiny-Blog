@@ -14,6 +14,7 @@ class TinyStore<S = any> {
   moduleCollection: ModuleCollection<S>
   mutations: Record<string, any> = {}
   actions: Record<string, any> = {}
+  getters: GetterTree<any, S> = {}
   commit: Commit
   dispatch: Dispatch
   constructor(options: StoreOptions<S>) {
@@ -61,6 +62,8 @@ class TinyStore<S = any> {
 function installModule<R>(store: TinyStore<R>, rootState_: R, path: string[], module: ModuleWrapper<any, R>) {
   const isRoot = !path.length
 
+  const nameSpace = store.moduleCollection.getNameSpace(path)
+  console.log('nameSpace', nameSpace)
   // 如果不是根模块
   if (!isRoot) {
     // 1. 拿到父级的state
@@ -71,6 +74,11 @@ function installModule<R>(store: TinyStore<R>, rootState_: R, path: string[], mo
 
   module.forEachChild((child, key) => {
     installModule(store, rootState_, path.concat(key), child)
+  })
+
+  module.forEachGetter((getter, key) => {
+    const nameSpaceType = nameSpace + key
+    store.getters[nameSpaceType] = getter
   })
 }
 
@@ -101,8 +109,16 @@ class ModuleWrapper<S, R> {
       fn(this.children[key], key)
     })
   }
+  forEachGetter(fn: GetterToKey<R>) {
+    if (this.rawModule.getters) {
+      Object.keys(this.rawModule.getters).forEach(key => {
+        fn(this.rawModule.getters![key], key)
+      })
+    }
+  }
 }
 
+type GetterToKey<R> = (getter: Getter<any, R>, key: string) => any
 type ChildMdleWraperToKey<R> = (moduleWrapper: ModuleWrapper<any, R>, key: string) => void
 
 class ModuleCollection<R> {
@@ -156,6 +172,14 @@ class ModuleCollection<R> {
       console.log(key, 'key')
       return moduleWrapper.getChild(key)
     }, module)
+  }
+
+  getNameSpace(path: string[]) {
+    let moduleWrapper = this.root
+    return path.reduce((nameSpace, key) => {
+      moduleWrapper = moduleWrapper.getChild(key)
+      return nameSpace + (moduleWrapper.namespaced ? key + '/' : '')
+    }, '')
   }
 }
 
@@ -216,6 +240,7 @@ type Action<S, R> = (context: ActionContext<S, R>, payload?: any) => any
 
 type Mutation<S> = (state: S, payload?: any) => void
 
-type Getter<S, R> = (state: S, getters: any, rootState: R, rootGetters: any) => any
+// type Getter<S, R> = (state: S, getters: any, rootState: R, rootGetters: any) => any
+type Getter<S, R> = (state: S) => any
 
 export { }
