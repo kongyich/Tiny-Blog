@@ -13,6 +13,7 @@ export default defineComponent({
   setup() {
     const store = useStore<RootState>()
     console.log(store, '<----store')
+    console.log(store.getters['homeModule/showNavList'], '<---getters')
     return {
       store
     }

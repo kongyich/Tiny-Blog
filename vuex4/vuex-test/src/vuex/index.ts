@@ -78,7 +78,12 @@ function installModule<R>(store: TinyStore<R>, rootState_: R, path: string[], mo
 
   module.forEachGetter((getter, key) => {
     const nameSpaceType = nameSpace + key
-    store.getters[nameSpaceType] = getter
+    // store.getters[nameSpaceType] = getter
+    Object.defineProperty(store.getters, nameSpaceType, {
+      get() {
+        return getter(module.state)
+      }
+    })
   })
 }
 
