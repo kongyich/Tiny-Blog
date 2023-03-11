@@ -22,5 +22,3 @@ class FoodController {
     res.end();
   }
 }
-
-// router.get("/showFood/:foodname/:price")
