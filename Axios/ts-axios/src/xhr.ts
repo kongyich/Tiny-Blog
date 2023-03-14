@@ -1,7 +1,7 @@
-import { AxiosRequestConfig, METHODSTYPE } from './types'
+import type { AxiosRequestConfig, METHODSTYPE } from './types'
 
 export default function xhr(config: AxiosRequestConfig) {
-  const { data = null, url, method = METHODSTYPE.GET } = config
+  const { data = null, url, method = 'get' } = config
 
   const request = new XMLHttpRequest()
   request.open(method.toUpperCase(), url, true)
