@@ -1,4 +1,4 @@
-import { isDate, isObject } from "./utils";
+import { isDate, isObject } from './utils'
 
 function encode(val: string): string {
   return encodeURIComponent(val)
@@ -11,14 +11,13 @@ function encode(val: string): string {
     .replace(/%5D/gi, ']')
 }
 
-
 export function bulidURL(url: string, params?: any) {
   if (!params) return url
 
   let parts: string[] = []
   Object.keys(params).forEach(key => {
     let val = params[key]
-    if (val === null || typeof val === "undefined") return
+    if (val === null || typeof val === 'undefined') return
 
     let values: string[]
 
@@ -38,7 +37,6 @@ export function bulidURL(url: string, params?: any) {
       parts.push(`${encode(key)}=${encode(val)}`)
     })
   })
-
 
   let serializedParams = parts.join('&')
   if (serializedParams) {
