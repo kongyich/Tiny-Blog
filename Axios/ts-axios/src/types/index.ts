@@ -1,17 +1,15 @@
 
-export enum METHODSTYPE {
-  GET = 'get',
-  POST = 'post',
-  DELETE = 'delete',
-  PUT = 'put',
-  HEAD = 'head',
-  OPTIONS = 'options',
-  PATCH = 'patch'
-}
+export type Method = 'get' | 'GET'
+  | 'delete' | 'Delete'
+  | 'head' | 'HEAD'
+  | 'options' | 'OPTIONS'
+  | 'post' | 'POST'
+  | 'put' | 'PUT'
+  | 'patch' | 'PATCH'
 
 export interface AxiosRequestConfig {
   url: string,
-  method?: METHODSTYPE,
+  method?: Method,
   params?: any,
   data?: any,
 }

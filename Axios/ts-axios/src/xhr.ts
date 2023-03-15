@@ -1,4 +1,4 @@
-import type { AxiosRequestConfig, METHODSTYPE } from './types'
+import type { AxiosRequestConfig } from './types'
 
 export default function xhr(config: AxiosRequestConfig) {
   const { data = null, url, method = 'get' } = config
