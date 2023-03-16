@@ -49,4 +49,3 @@ export function bulidURL(url: string, params?: any) {
   }
   return url
 }
-

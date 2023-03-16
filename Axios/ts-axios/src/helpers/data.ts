@@ -1,4 +1,4 @@
-import { isPlainObj } from "./utils";
+import { isPlainObj } from './utils'
 
 export function transformRequest(data: any) {
   if (isPlainObj(data)) return JSON.stringify(data)
