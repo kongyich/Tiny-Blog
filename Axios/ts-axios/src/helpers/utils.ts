@@ -13,3 +13,5 @@ export const isDate = (val: any): val is Date => 'date' === judgment(val)
 export function isObject(val: any): val is Object {
   return val !== null && typeof val === 'object'
 }
+
+export const isPlainObj = (val: any): val is Object => judgment(val) === 'object'
