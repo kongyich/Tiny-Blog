@@ -1,4 +1,4 @@
-import { isPlainObj } from "./utils"
+import { isPlainObj } from './utils'
 
 // 处理Content-Type格式
 function normalizeHeaderName(headers: any, normalizedName: string): void {
