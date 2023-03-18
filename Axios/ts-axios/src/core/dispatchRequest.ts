@@ -4,7 +4,7 @@ import { bulidURL } from '../helpers/url';
 import { transformRequest, transformResponse } from '../helpers/data';
 import { processHeaders } from '../helpers/headers';
 
-function axios(config: AxiosRequestConfig): AxiosPromise {
+function dispatchRequest(config: AxiosRequestConfig): AxiosPromise {
   processConfig(config)
   return xhr(config).then(res => {
     return transformResponseData(res)
@@ -36,4 +36,4 @@ function transformURL(config: AxiosRequestConfig) {
   return bulidURL(url!, params)
 }
 
-export default axios
+export default dispatchRequest
