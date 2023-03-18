@@ -153,3 +153,13 @@ axios({
 }).then((res) => {
   console.log(res)
 })
+
+
+axios({
+  method: 'get',
+  url: '/error/get'
+}).then((res) => {
+  console.log(res)
+}).catch((e) => {
+  console.log(e)
+})
