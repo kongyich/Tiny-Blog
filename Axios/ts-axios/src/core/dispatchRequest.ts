@@ -6,10 +6,17 @@ import { processHeaders, flattenHeaders } from '../helpers/headers';
 import transform from './transform';
 
 function dispatchRequest(config: AxiosRequestConfig): AxiosPromise {
+  throwIfCancellationRequested(config)
   processConfig(config)
   return xhr(config).then(res => {
     return transformResponseData(res)
   })
+}
+
+function throwIfCancellationRequested(config: AxiosRequestConfig): void {
+  if (config.cancelToken) {
+    config.cancelToken.throwIfRequested()
+  }
 }
 
 function transformResponseData(res: AxiosResponse): AxiosResponse {
