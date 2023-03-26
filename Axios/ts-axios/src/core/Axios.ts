@@ -2,6 +2,7 @@ import { AxiosRequestConfig, AxiosPromise, Method, AxiosResponse, ResolvedFn, Re
 import dispatchRequest from './dispatchRequest'
 import InterceptorManager from './interceptorManager';
 import mergeConfig from './mergeConfig';
+import { transformURL } from './dispatchRequest'
 
 interface Interceptors {
   request: InterceptorManager<AxiosRequestConfig>
@@ -59,6 +60,11 @@ export default class Axios {
     }
 
     return promise
+  }
+
+  getUri(config: AxiosRequestConfig): string {
+    config = mergeConfig(this.defaults, config)
+    return transformURL(config)
   }
 
   get(url: string, config?: AxiosRequestConfig): AxiosPromise {
