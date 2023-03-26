@@ -1,6 +1,6 @@
 import type { AxiosPromise, AxiosRequestConfig, AxiosResponse } from '../types'
 import xhr from './xhr'
-import { bulidURL } from '../helpers/url';
+import { buildURL, combineURL, isAbsoluteURL } from '../helpers/url';
 // import { transformRequest, transformResponse } from '../helpers/data';
 import { processHeaders, flattenHeaders } from '../helpers/headers';
 import transform from './transform';
@@ -41,8 +41,11 @@ function processConfig(config: AxiosRequestConfig): void {
 // }
 
 function transformURL(config: AxiosRequestConfig) {
-  const { url, params } = config
-  return bulidURL(url!, params)
+  let { url, params, paramsSerializer, baseURL } = config
+  if (baseURL && !isAbsoluteURL(url!)) {
+    url = combineURL(baseURL, url)
+  }
+  return buildURL(url!, params, paramsSerializer)
 }
 
 export default dispatchRequest
