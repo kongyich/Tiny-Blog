@@ -28,6 +28,7 @@ export interface AxiosRequestConfig {
   cancelToken: CancelToken
   auth?: AxiosBasicCredentials
   baseURL?: string
+  paramsSerializer?: (params: any) => string
 
   [propName: string]: any
 }
