@@ -55,7 +55,7 @@ function deepMergeStrat(val1: any, val2: any) {
   }
 }
 
-const stratKeysDeepMerge = ['headers']
+const stratKeysDeepMerge = ['headers', 'auth']
 
 stratKeysDeepMerge.forEach(key => {
   strats[key] = deepMergeStrat

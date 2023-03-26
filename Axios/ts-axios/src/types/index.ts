@@ -26,8 +26,13 @@ export interface AxiosRequestConfig {
   transformRequest: AxiosTransformer | AxiosTransformer[],
   transformResponse: AxiosTransformer | AxiosTransformer[]
   cancelToken: CancelToken
-
+  auth?: AxiosBasicCredentials
   [propName: string]: any
+}
+
+export interface AxiosBasicCredentials {
+  username: string
+  password: string
 }
 
 export interface CancelToken {

@@ -4,9 +4,13 @@ import { createError } from '../helpers/error';
 
 export default function xhr(config: AxiosRequestConfig): AxiosPromise {
   return new Promise((resolve, reject) => {
-    const { data = null, url, method = 'get', headers, responseType, timeout, cancelToken } = config
+    const { data = null, url, method = 'get', headers, responseType, timeout, cancelToken, auth } = config
 
     const request = new XMLHttpRequest()
+
+    if (auth) {
+      headers['Authorization'] = 'Basic ' + btoa(auth.username + ':' + auth.password)
+    }
 
     if (responseType) {
       request.responseType = responseType
