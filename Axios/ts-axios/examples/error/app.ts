@@ -35,18 +35,10 @@ axios({
   timeout: 2000
 }).then((res) => {
   console.log(res)
-}).catch((e) => {
-  console.log(e.message)
-})
-
-
-axios({
-  method: 'get',
-  url: '/error/timeout',
-  timeout: 2000
-}).then((res) => {
-  console.log(res)
 }).catch((e: AxiosError) => {
-  console.log(e, 'eeeeee')
+  console.log(e.message)
+  console.log(e.config)
   console.log(e.code)
+  console.log(e.request)
+  console.log(e.isAxiosError)
 })

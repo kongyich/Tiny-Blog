@@ -1,4 +1,9 @@
-import { isDate, isPlainObj } from './utils'
+import { isDate, isPlainObject, isURLSearchParams } from './util'
+
+interface URLOrigin {
+  protocol: string
+  host: string
+}
 
 function encode(val: string): string {
   return encodeURIComponent(val)
@@ -44,7 +49,7 @@ export function buildURL(
       values.forEach(val => {
         if (isDate(val)) {
           val = val.toISOString()
-        } else if (isPlainObj(val)) {
+        } else if (isPlainObject(val)) {
           val = JSON.stringify(val)
         }
         parts.push(`${encode(key)}=${encode(val)}`)
@@ -66,14 +71,30 @@ export function buildURL(
   return url
 }
 
-export function isURLSearchParams(val: any): val is URLSearchParams {
-  return typeof val !== 'undefined' && val instanceof URLSearchParams
-}
-
 export function isAbsoluteURL(url: string): boolean {
   return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url)
 }
 
 export function combineURL(baseURL: string, relativeURL?: string): string {
   return relativeURL ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '') : baseURL
+}
+
+export function isURLSameOrigin(requestURL: string): boolean {
+  const parsedOrigin = resolveURL(requestURL)
+  return (
+    parsedOrigin.protocol === currentOrigin.protocol && parsedOrigin.host === currentOrigin.host
+  )
+}
+
+const urlParsingNode = document.createElement('a')
+const currentOrigin = resolveURL(window.location.href)
+
+function resolveURL(url: string): URLOrigin {
+  urlParsingNode.setAttribute('href', url)
+  const { protocol, host } = urlParsingNode
+
+  return {
+    protocol,
+    host
+  }
 }

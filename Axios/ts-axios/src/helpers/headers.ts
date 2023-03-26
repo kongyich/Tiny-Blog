@@ -1,8 +1,6 @@
-import { isPlainObj } from './utils'
-import { Method } from '../types/index';
-import { deepMerge } from '../core/mergeConfig';
+import { isPlainObject, deepMerge } from './util'
+import { Method } from '../types'
 
-// 处理Content-Type格式
 function normalizeHeaderName(headers: any, normalizedName: string): void {
   if (!headers) {
     return
@@ -18,7 +16,7 @@ function normalizeHeaderName(headers: any, normalizedName: string): void {
 export function processHeaders(headers: any, data: any): any {
   normalizeHeaderName(headers, 'Content-Type')
 
-  if (isPlainObj(data)) {
+  if (isPlainObject(data)) {
     if (headers && !headers['Content-Type']) {
       headers['Content-Type'] = 'application/json;charset=utf-8'
     }
@@ -26,26 +24,30 @@ export function processHeaders(headers: any, data: any): any {
   return headers
 }
 
-export function parseHeaders(headers: string) {
+export function parseHeaders(headers: string): any {
   let parsed = Object.create(null)
-  if (!headers) return parsed
+  if (!headers) {
+    return parsed
+  }
 
   headers.split('\r\n').forEach(line => {
-    let [key, val] = line.split(':')
-    if (!key) return
+    let [key, ...vals] = line.split(':')
     key = key.trim().toLowerCase()
-
-    if (val) val = val.trim()
+    if (!key) {
+      return
+    }
+    const val = vals.join(':').trim()
     parsed[key] = val
   })
+
   return parsed
 }
 
-
-export function flattenHeaders(headers: any, method: Method) {
-  if (!headers) return headers
-
-  headers = deepMerge(headers.common || {}, headers[method] || {}, headers)
+export function flattenHeaders(headers: any, method: Method): any {
+  if (!headers) {
+    return headers
+  }
+  headers = deepMerge(headers.common, headers[method], headers)
 
   const methodsToDelete = ['delete', 'get', 'head', 'options', 'post', 'put', 'patch', 'common']
 
