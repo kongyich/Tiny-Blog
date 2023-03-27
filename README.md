@@ -4,8 +4,6 @@
 
 
 
-
-
 # Typescript 系列
 
 [Express-router中的get方法是如何使用ts约束的？](https://github.com/kongyich/Tiny-Blog/issues/7)
