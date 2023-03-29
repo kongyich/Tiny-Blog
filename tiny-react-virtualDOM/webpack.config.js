@@ -36,6 +36,6 @@ module.exports = {
     // 不启动压缩
     compress: false,
     host: "localhost",
-    port: 5000
+    port: 8080
   }
 }
