@@ -17,3 +17,5 @@ const virtualDOM = (
   </div>
 )
 console.log(virtualDOM)
+
+console.log(TinyReact.render(virtualDOM, document.querySelector('#root')))
