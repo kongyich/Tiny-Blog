@@ -16,6 +16,8 @@ const virtualDOM = (
     2, 3
   </div>
 )
-console.log(virtualDOM)
 
-console.log(TinyReact.render(virtualDOM, document.querySelector('#root')))
+ // console.log(TinyReact.render(virtualDOM, document.querySelector('#root')))
+ const Heart = () => <span>&hearts;</span>
+
+TinyReact.render(<Heart />, document.querySelector('#root'))
