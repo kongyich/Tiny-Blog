@@ -18,5 +18,5 @@ export default function mountComponent(virtualDOM, container) {
 }
 
 function buildFunctionComponent(virtualDOM) {
-  return virtualDOM && virtualDOM.type()
+  return virtualDOM && virtualDOM.type(virtualDOM.props || {})
 }
