@@ -24,8 +24,14 @@ const virtualDOM = (
 
 
 class Alert extends TinyReact.Component {
+  constructor(props) {
+    super(props)
+  }
   render() {
-    return <div>hello class</div>
+    return <div>
+      <span>{this.props.name}</span>
+      <span>{this.props.age}</span>
+    </div>
   }
 }
-TinyReact.render(<Alert />, document.querySelector('#root'))
+TinyReact.render(<Alert name='kk' age={18} />, document.querySelector('#root'))
