@@ -18,6 +18,14 @@ const virtualDOM = (
 )
 
  // console.log(TinyReact.render(virtualDOM, document.querySelector('#root')))
- const Heart = () => <span>&hearts;</span>
+//  const Heart = () => <span>&hearts;</span>
 
-TinyReact.render(<Heart />, document.querySelector('#root'))
+// TinyReact.render(<Heart />, document.querySelector('#root'))
+
+
+class Alert extends TinyReact.Component {
+  render() {
+    return <div>hello class</div>
+  }
+}
+TinyReact.render(<Alert />, document.querySelector('#root'))
