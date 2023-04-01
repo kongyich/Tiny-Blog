@@ -1,5 +1,7 @@
 import TinyReact from "./TinyReact"
 
+const root = document.getElementById("root")
+
 const oldVirtualDOM = (
   <div className="container">
     <h1>你好 Tiny React</h1>
@@ -7,7 +9,7 @@ const oldVirtualDOM = (
     <div>
       嵌套1 <div>嵌套 1.1</div>
     </div>
-    <h3>(观察: 这个将会被改变)</h3>
+    <h3>原始h3</h3>
     {2 == 1 && <div>如果2和1相等渲染当前内容</div>}
     {2 == 2 && <div>2</div>}
     <span>这是一段内容</span>
@@ -25,20 +27,20 @@ const newVirtualDOM = (
     <div>
       嵌套1 <div>嵌套 1.1</div>
     </div>
-    <h3>(观察: 这个将会被改变)</h3>
+    <h3>(观察: 这个将会被改变h3)</h3>
     {2 == 1 && <div>如果2和1相等渲染当前内容</div>}
     {2 == 2 && <div>2</div>}
-    <span className="box-new">这是一段内容</span>
+    <span>改变了</span>
     <button onClick={() => alert("你好!!!")}>点击我</button>
     <h3>这个将会被删除</h3>
     2, 3
   </div>
 )
 
-TinyReact.render(oldVirtualDOM, document.querySelector('#root'))
+TinyReact.render(oldVirtualDOM, root)
 
 setTimeout(() => {
-  TinyReact.render(newVirtualDOM, document.querySelector('#root')) 
+  TinyReact.render(newVirtualDOM, root) 
 }, 3000)
 
 
