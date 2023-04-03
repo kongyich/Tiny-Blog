@@ -22,5 +22,12 @@ if(!oldDOM) {
     newVirtualDOM.children.forEach((item, index) => {
       diff(item, oldDOM, oldDOM.childNodes[index])
     })
+
+    let oldChildNodes = oldDOM.childNodes
+    if(oldChildNodes.length > newVirtualDOM.children.length) {
+      for(let i = oldChildNodes.length - 1; i > newVirtualDOM.children.length - 1; i--) {
+        oldDOM.removeChild(oldChildNodes[i])
+      }
+    }
   }
 }
