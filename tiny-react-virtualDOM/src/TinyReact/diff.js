@@ -5,7 +5,7 @@ import createElement from './createElement'
 
 export default function diff(newVirtualDOM, container, oldDOM) {
 const oldVirtualDOM = oldDOM && oldDOM._virtualDOM
-const oldComponent = oldVirtualDOM.component
+const oldComponent = oldVirtualDOM && oldVirtualDOM.component
 if(!oldDOM) {
   mountElement(newVirtualDOM, container)
 } else if(oldVirtualDOM.type !== newVirtualDOM.type && typeof newVirtualDOM.type !== 'function') {

@@ -2,7 +2,40 @@ import TinyReact from "./TinyReact"
 
 const root = document.getElementById("root")
 
+class DemoRef extends TinyReact.Component {
+  handle() {
+    let value = this.input.value
+    console.log(value)
+    console.log(this.alert)
+  }
+  componentDidMount() {
+    console.log("componentDidMount")
+  }
+  render() {
+    return (
+      <div>
+        <input type="text" ref={input => (this.input = input)} />
+        <button onClick={this.handle.bind(this)}>按钮</button>
+        <Alert ref={alert => (this.alert = alert)} />
+      </div>
+    )
+  }
+}
 
+// class DemoRef extends TinyReact.Component {
+//   handle() {
+//     let value = this.input.value
+//     console.log(value)
+//   }
+//   render() {
+//     return (
+//       <div>
+//         <input type="text" ref={input => (this.input = input)} />
+//         <button onClick={this.handle.bind(this)}>按钮</button>
+//       </div>
+//     )
+//   }
+// }
 class Alert extends TinyReact.Component {
   constructor(props) {
     super(props)
@@ -88,4 +121,4 @@ class Alert extends TinyReact.Component {
 //     </div>
 //   }
 // }
-TinyReact.render(<Alert />, root)
+TinyReact.render(<DemoRef />, root)

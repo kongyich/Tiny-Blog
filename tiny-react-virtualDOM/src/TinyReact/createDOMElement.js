@@ -3,6 +3,8 @@ import updateElementNode from './updateElementNode'
 
 export default function createDOMElement(virtualDOM) {
   let newElement = null
+  
+  
 
   if(virtualDOM.type === 'text') {
     newElement = document.createTextNode(virtualDOM.props.textContent) 
@@ -13,9 +15,15 @@ export default function createDOMElement(virtualDOM) {
     updateElementNode(newElement, virtualDOM)
   }
 
+  if (virtualDOM.props && virtualDOM.props.ref) {
+    virtualDOM.props.ref(newElement)
+  }
+
   virtualDOM.children.forEach(ele=>{
     mountElement(ele, newElement)
   })
+
+ 
 
   return newElement
 }
