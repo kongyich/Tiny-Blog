@@ -5,11 +5,15 @@ import createElement from './createElement'
 
 export default function diff(newVirtualDOM, container, oldDOM) {
 const oldVirtualDOM = oldDOM && oldDOM._virtualDOM
+const oldComponent = oldVirtualDOM.component
 if(!oldDOM) {
   mountElement(newVirtualDOM, container)
 } else if(oldVirtualDOM.type !== newVirtualDOM.type && typeof newVirtualDOM.type !== 'function') {
   const newElement = createElement(virtualDOM)
   oldDOM.parentNode.replaceChild(newElement, oldDOM)
+} else if(typeof newVirtualDOM.type === 'function') {
+  // 更新的是组件
+  diffComponent(newVirtualDOM, oldComponent, oldDOM, container)
 } else if(oldVirtualDOM && oldVirtualDOM.type === newVirtualDOM.type) {
     if(newVirtualDOM.type === 'text') {
       // 文本节点
