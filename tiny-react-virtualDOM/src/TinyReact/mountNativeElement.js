@@ -1,4 +1,5 @@
 import createDOMElement from './createDOMElement'
+import unmount from './unmount'
 
 export default function mountNativeElement(virtualDOM, container, oldDOM) {
 
@@ -21,9 +22,4 @@ export default function mountNativeElement(virtualDOM, container, oldDOM) {
     component.setDOM(newDom)
   }
   newDom._virtualDOM = virtualDOM
-}
-
-// unmount.js
-function unmount(node) {
-  node.remove()
 }
