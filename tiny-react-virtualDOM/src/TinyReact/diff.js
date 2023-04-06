@@ -23,9 +23,44 @@ if(!oldDOM) {
       updateElementNode(oldDOM, newVirtualDOM, oldVirtualDOM)
     }
 
-    newVirtualDOM.children.forEach((item, index) => {
-      diff(item, oldDOM, oldDOM.childNodes[index])
-    })
+
+    let keyedElements = {}
+
+    for(let i = 0; i < oldDOM.childNodes.length; i++) {
+      let domElement = oldDOM.childNodes[i]
+      if (domElement.nodeType === 1) {
+        let key = domElement.getAttribute("key")
+        if (key) {
+          keyedElements[key] = domElement
+        }
+      }
+    }
+
+    let hasNoKey = Object.keys(keyedElements).length === 0
+
+    if(hasNoKey) {
+      newVirtualDOM.children.forEach((item, index) => {
+        diff(item, oldDOM, oldDOM.childNodes[index])
+      })
+    } else {
+      newVirtualDOM.children.forEach((child, index) => {
+        const key = chils.props.key
+
+        if(key) {
+          let domElement = keyedElements[key]
+          if(domElement) {
+            if(oldDOM.childNodes[index] && oldDOM.childNodes[index] !== domElement) {
+              oldDOM.insertBefore(domElement, oldDOM.childNodes[index])
+            }
+          }
+        } else {
+          mountElement(child, oldDOM, oldDOM.childNodes[index])
+        }
+      })
+    }
+
+
+   
 
     let oldChildNodes = oldDOM.childNodes
     if(oldChildNodes.length > newVirtualDOM.children.length) {
