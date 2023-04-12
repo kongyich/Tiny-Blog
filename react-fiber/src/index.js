@@ -1,1 +1,10 @@
-console.log('hello word');
+import React, { render } from './react'
+
+const root = document.getElementById('root')
+const jsx = (
+  <div>
+    <p>hello react</p>
+  </div>
+)
+
+console.log(jsx);
