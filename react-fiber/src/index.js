@@ -7,4 +7,5 @@ const jsx = (
   </div>
 )
 
+render(jsx, root)
 console.log(jsx);
