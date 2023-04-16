@@ -38,15 +38,19 @@ const reconcileChildren = (fiber, children) => {
 
   while(index < numberOfElements) {
     element = arrifiedChildren[index]
+    /**
+     * 子级的fiber对象
+    */
     newFiber = {
       type: element.type,
       props: element.props,
       tag: 'host_component',
       effects: [],
       effectTag: 'palcement',
-      stateNode: null,
       parent: fiber
     }
+
+    newFiber.stateNode = createStateNode(newFiber)
 
     if(index === 0) {
       fiber.child = newFiber
