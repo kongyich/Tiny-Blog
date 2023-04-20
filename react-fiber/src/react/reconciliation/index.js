@@ -67,6 +67,10 @@ const reconcileChildren = (fiber, children) => {
 
 const executeTask = fiber => {
   reconcileChildren(fiber, fiber.props.children)
+  /**
+   * 如果存在同级，则返回同级，构建同级的子级
+   * 如果同级不存在，则返回父级，看父级是否有同级
+  */
   if(fiber.child) return fiber.child
   /**
    * 是否有同级？
@@ -75,7 +79,9 @@ const executeTask = fiber => {
   let currentExecutelyFiber = fiber
 
   while(currentExecutelyFiber.parent) {
-    
+    currentExecutelyFiber.parent.effects = currentExecutelyFiber.parent.effects.concat(
+      currentExecutelyFiber.effects.concat([currentExecutelyFiber])
+    ) 
     if(currentExecutelyFiber.sibling) return currentExecutelyFiber.sibling
     currentExecutelyFiber = currentExecutelyFiber.parent
   }
