@@ -68,7 +68,17 @@ const reconcileChildren = (fiber, children) => {
 const executeTask = fiber => {
   reconcileChildren(fiber, fiber.props.children)
   if(fiber.child) return fiber.child
-  console.log(fiber, 'pppppp');
+  /**
+   * 是否有同级？
+  */
+
+  let currentExecutelyFiber = fiber
+
+  while(currentExecutelyFiber.parent) {
+    
+    if(currentExecutelyFiber.sibling) return currentExecutelyFiber.sibling
+    currentExecutelyFiber = currentExecutelyFiber.parent
+  }
 }
 
 const workLoop = deadline => {
