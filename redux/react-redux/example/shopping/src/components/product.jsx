@@ -1,8 +1,14 @@
 import React from "react"
+import { connect } from "react-redux"
 
-const Product = () => {
-  return  <section className="container content-section">
+const Product = ({ products }) => {
+  return  (<section className="container content-section">
   <h2 className="section-header">商品列表</h2>
+
+  <div>
+    {products}
+  </div>
+
   <div className="shop-items">
       <div className="shop-item">
           <img className="shop-item-image" src="images/01.webp" />
@@ -37,7 +43,11 @@ const Product = () => {
           </div>
       </div>
   </div>
-</section>
+</section>)
 }
 
-export default Product
+const mapStateToProps = state => ({
+  products: state.products
+})
+
+export default connect(mapStateToProps)(Product)
