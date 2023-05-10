@@ -3,6 +3,6 @@ import productSaga from './product.saga'
 
 export default function* rootSaga() {
   yield all([
-    productSaga
+    productSaga()
   ])
 }

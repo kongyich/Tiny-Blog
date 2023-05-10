@@ -3,11 +3,11 @@ import { connect } from "react-redux"
 import { bindActionCreators } from 'redux'
 import * as productActions from '../store/actions/product.action'
 
-const Product = ({ products, loadProducts }) => {
+function Product({ products, loadProducts }) {
 
     useEffect(() => {
         loadProducts()
-    })
+    }, [])
 
 
   return  (<section className="container content-section">
