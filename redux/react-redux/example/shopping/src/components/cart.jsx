@@ -1,7 +1,11 @@
 import React from "react"
+import { connect } from "react-redux"
+import { bindActionCreators } from 'redux'
+import * as cartActions from '../store/actions/cart.action'
 
-const Cart = () => {
+const Cart = ({ carts }) => {
   return <section className="container content-section">
+  { JSON.stringify(carts) }
             <h2 className="section-header">购物车</h2>
             <div className="cart-row">
                 <span className="cart-item cart-header cart-column">商品</span>
@@ -39,4 +43,10 @@ const Cart = () => {
         </section>
 }
 
-export default Cart
+
+const mapStateToProps = state => ({
+    carts: state.cart,
+  })
+
+  
+  export default connect(mapStateToProps)(Cart)
