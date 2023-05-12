@@ -20,7 +20,7 @@ const Cart = ({ carts, loadCarts }) => {
                     return (
                         <div key={item.id} className="cart-row">
                     <div className="cart-item cart-column">
-                        <img className="cart-item-image" src={item.thumbnail} width="100" height="100" />
+                        <img className="cart-item-image" src={`http://localhost:3005${item.thumbnail}`} width="100" height="100" />
                         <span className="cart-item-title">{ item.title }</span>
                     </div>
                     <span className="cart-price cart-column">￥{item.price}</span>
