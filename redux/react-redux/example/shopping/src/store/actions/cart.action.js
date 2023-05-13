@@ -13,3 +13,7 @@ export const saveCarts = createAction('saveCarts')
 export const deleteProductFromCart = createAction('deleteProductFromCart')
 // 删除本地购物车数据
 export const deleteProductFromLocalCart = createAction('deleteProductFromLocalCart')
+
+// 购物车商品数量更改
+export const changeProductNumber = createAction('changeProductNumber')
+export const changeLocalProductNumber = createAction('changeLocalProductNumber')

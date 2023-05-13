@@ -3,10 +3,16 @@ import { connect } from "react-redux"
 import { bindActionCreators } from 'redux'
 import * as cartActions from '../store/actions/cart.action'
 
-const Cart = ({ carts, loadCarts, deleteProductFromCart }) => {
+const Cart = ({ carts, loadCarts, deleteProductFromCart, changeProductNumber }) => {
     useEffect(() => {
         loadCarts()
     }, [])
+
+    const handleChangeProductNumber = (cid, e) => {
+        const val = e.target.value
+
+        changeProductNumber({ cid, count: val })
+    }
   return <section className="container content-section">
             <h2 className="section-header">购物车</h2>
             <div className="cart-row">
@@ -25,7 +31,7 @@ const Cart = ({ carts, loadCarts, deleteProductFromCart }) => {
                     </div>
                     <span className="cart-price cart-column">￥{item.price}</span>
                     <div className="cart-quantity cart-column">
-                        <input className="cart-quantity-input" type="number" value={item.count} onChange={() => {}} />
+                        <input className="cart-quantity-input" type="number" value={item.count} onChange={e => {handleChangeProductNumber(item.id, e)}} />
                         <button className="btn btn-danger" onClick={() => deleteProductFromCart(item.id)} type="button">删除</button>
                     </div>
                 </div>
