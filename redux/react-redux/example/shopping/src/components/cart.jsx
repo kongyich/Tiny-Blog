@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import { bindActionCreators } from 'redux'
 import * as cartActions from '../store/actions/cart.action'
 
-const Cart = ({ carts, loadCarts }) => {
+const Cart = ({ carts, loadCarts, deleteProductFromCart }) => {
     useEffect(() => {
         loadCarts()
     }, [])
@@ -25,8 +25,8 @@ const Cart = ({ carts, loadCarts }) => {
                     </div>
                     <span className="cart-price cart-column">￥{item.price}</span>
                     <div className="cart-quantity cart-column">
-                        <input className="cart-quantity-input" type="number" />
-                        <button className="btn btn-danger" type="button">删除</button>
+                        <input className="cart-quantity-input" type="number" value={item.count} onChange={() => {}} />
+                        <button className="btn btn-danger" onClick={() => deleteProductFromCart(item.id)} type="button">删除</button>
                     </div>
                 </div>
                     )

@@ -1,5 +1,5 @@
 import { takeEvery, put } from 'redux-saga/effects'
-import { addProductToCart, addProductToLocalCart, loadCarts, saveCarts } from '../actions/cart.action'
+import { addProductToCart, addProductToLocalCart, loadCarts, saveCarts, deleteProductFromCart, deleteProductFromLocalCart } from '../actions/cart.action'
 import axios from 'axios'
 
 
@@ -17,9 +17,21 @@ function* handleLoadCarts() {
   yield put(saveCarts(data))
 }
 
+function* handleDeleteProductFromCart(action) {
+  const { data } = yield axios.delete('http://localhost:3005/cart/delete', {
+    params: {
+      cid: action.payload
+    }
+  })
+
+  yield put(deleteProductFromLocalCart(action.payload))
+}
+
 export default function* productSaga() {
   // 加载商品列表数据
   yield takeEvery(addProductToCart, handleAddProductToCart)
 
   yield takeEvery(loadCarts, handleLoadCarts)
+
+  yield takeEvery(deleteProductFromCart, handleDeleteProductFromCart)
 }
