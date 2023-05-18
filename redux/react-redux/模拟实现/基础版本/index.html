@@ -15,6 +15,26 @@
   <script src="./index.js"></script>
 
   <script>
+    function enhancer(createStore) {
+      return function (reducer, preloadedState) {
+        let store = createStore(reducer, preloadedState)
+        let dispatch = store.dispatch
+
+        function _dispatch(action) {
+          if (typeof action === 'function') {
+            return action(dispatch)
+          }
+
+          dispatch(action)
+        }
+
+        return {
+          ...store,
+          dispatch: _dispatch
+        }
+      }
+    }
+
     function reducer(state, action) {
       switch (action.type) {
         case 'increment':
@@ -28,16 +48,24 @@
       }
     }
     //  创建store
-    let store = createStore(reducer, 0);
+    let store = createStore(reducer, 0, enhancer);
 
     store.subscribe(() => {
       document.getElementById('box').innerHTML = store.getState()
     })
 
     document.getElementById('increment').onclick = function () {
-      console.log('rrr')
-      store.dispatch({
-        type: 'increment'
+      // console.log('rrr')
+      // store.dispatch({
+      //   type: 'increment'
+      // })
+
+      store.dispatch(dispatch => {
+        setTimeout(() => {
+          dispatch({
+            type: 'increment'
+          })
+        }, 1000)
       })
     }
 
