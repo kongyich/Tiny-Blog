@@ -13,6 +13,8 @@
   <span id="box">0</span>
   <button id="decrement">-1</button>
   <script src="./index.js"></script>
+  <script src="./middlewares/logger.js"></script>
+  <script src="./middlewares/thunk.js"></script>
 
   <script>
     function enhancer(createStore) {
@@ -48,7 +50,7 @@
       }
     }
     //  创建store
-    let store = createStore(reducer, 0, enhancer);
+    let store = createStore(reducer, 0, applyMiddleware(logger, thunk));
 
     store.subscribe(() => {
       document.getElementById('box').innerHTML = store.getState()
@@ -56,17 +58,17 @@
 
     document.getElementById('increment').onclick = function () {
       // console.log('rrr')
-      // store.dispatch({
-      //   type: 'increment'
-      // })
-
-      store.dispatch(dispatch => {
-        setTimeout(() => {
-          dispatch({
-            type: 'increment'
-          })
-        }, 1000)
+      store.dispatch({
+        type: 'increment'
       })
+
+      // store.dispatch(dispatch => {
+      //   setTimeout(() => {
+      //     dispatch({
+      //       type: 'increment'
+      //     })
+      //   }, 1000)
+      // })
     }
 
     document.getElementById('decrement').onclick = function () {

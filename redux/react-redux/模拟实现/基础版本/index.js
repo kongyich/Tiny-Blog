@@ -36,7 +36,6 @@ function createStore(reducer, preloadedState, enhancer) {
     }
   }
 
-
   // 订阅状态
   function subscribe(listener) {
     listeners.push(listener)
@@ -49,7 +48,6 @@ function createStore(reducer, preloadedState, enhancer) {
   }
 }
 
-
 function isPlanObject(obj) {
   if(typeof obj !== 'object' || obj === null) return false
 
@@ -60,4 +58,39 @@ function isPlanObject(obj) {
   }
 
   return Object.getPrototypeOf(obj) === proto
+}
+
+function applyMiddleware(...middlewares) {
+  return function(createStore) {
+    return function(reducer, preloadedState) {
+
+      // 创建store
+      let store = createStore(reducer, preloadedState)
+
+      let middlewareAPI = {
+        getState: store.getState,
+        dispatch: store.dispatch
+      }
+
+      // 调用中间件的第一层函数，传递阉割版的store对象
+      let chain = middlewares.map(middleware => middleware(middlewareAPI))
+
+      let dispatch = compose(...chain)(store.dispatch)
+      return {
+        ...store,
+        dispatch
+      }
+    }
+  }
+}
+
+function compose() {
+  let funcs = [...arguments]
+
+  return function(dispatch) {
+    for(let i = funcs.length - 1; i >= 0; i--) {
+      dispatch = funcs[i](dispatch)
+    }
+    return dispatch
+  }
 }
