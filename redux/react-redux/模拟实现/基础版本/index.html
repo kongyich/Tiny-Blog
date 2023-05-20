@@ -56,11 +56,32 @@
       document.getElementById('box').innerHTML = store.getState()
     })
 
+
+    const actions = bindActionCreators({
+      increment,
+      decrement
+    }, store.dispatch)
+
+    function increment() {
+      return {
+        type: 'increment'
+      }
+    }
+
+    function decrement() {
+      return {
+        type: 'decrement'
+      }
+    }
+
+
     document.getElementById('increment').onclick = function () {
       // console.log('rrr')
-      store.dispatch({
-        type: 'increment'
-      })
+      // store.dispatch({
+      //   type: 'increment'
+      // })
+
+      actions.increment()
 
       // store.dispatch(dispatch => {
       //   setTimeout(() => {
@@ -72,9 +93,11 @@
     }
 
     document.getElementById('decrement').onclick = function () {
-      store.dispatch({
-        type: 'decrement'
-      })
+      // store.dispatch({
+      //   type: 'decrement'
+      // })
+
+      actions.decrement()
     }
   </script>
 </body>
