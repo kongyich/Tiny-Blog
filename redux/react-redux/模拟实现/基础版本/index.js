@@ -104,3 +104,27 @@ function bindActionCreators(actionCreators, dispatch) {
    }
    return boundActionCreators
 }
+
+
+function combineReducers(reducers) {
+  // 1. 检查reducer类型，必须为函数
+  let reducerKeys = Object.keys(reducers)
+
+  for(let i = 0; i < reducerKeys.length; i++) {
+    if(typeof reducers[reducerKeys[i]] !== 'function') throw new Error('reducer必须是一个函数')
+  }
+  // 2. 调用一个个小的reducer 将每一个小的reducer合并为一个大的返回
+  return function(state, action) {
+    let nextState = {}
+    
+    for(let i = 0; i < reducerKeys.length; i++) {
+      let key = reducerKeys[i]
+      let reducer = reducers[key]
+
+      let previousState = state[key]
+
+      nextState[key] = reducer(previousState, action)
+    }
+    return nextState
+  }
+}

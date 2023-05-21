@@ -37,7 +37,7 @@
       }
     }
 
-    function reducer(state, action) {
+    function counterReducer(state, action) {
       switch (action.type) {
         case 'increment':
           return state + 1
@@ -49,11 +49,18 @@
           return state
       }
     }
+
+    let rootReducer = combineReducers({
+      counter: counterReducer
+    })
+
     //  创建store
-    let store = createStore(reducer, 0, applyMiddleware(logger, thunk));
+    let store = createStore(rootReducer, {
+      counter: 100
+    }, applyMiddleware(logger, thunk));
 
     store.subscribe(() => {
-      document.getElementById('box').innerHTML = store.getState()
+      document.getElementById('box').innerHTML = store.getState().counter
     })
 
 
