@@ -1,11 +1,20 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 export const TODOS_FEATURE_KEY = 'todos'
+
+const loadTodos = createAsyncThunk('todos.loadTodos', (payload, thunkAPI) => {
+  axios.get(payload).then(res => thunkAPI.dispatch(setTodos(res.data)))
+})
 
 const { reducer: TodosReducer, actions } = createSlice({
   name: TODOS_FEATURE_KEY,
   initialState: [],
   reducers: {
+    setTodos: (state, action) => {
+      action.payload.forEach(todo => {
+        state.push(todo)
+      })
+    },
     // addTodo: (state, action) => {
     //   state.push(action.payload)
     // },
@@ -25,5 +34,5 @@ const { reducer: TodosReducer, actions } = createSlice({
   }
 })
 
-export const { addTodo } = actions
+export const { addTodo, setTodos } = actions
 export default TodosReducer
