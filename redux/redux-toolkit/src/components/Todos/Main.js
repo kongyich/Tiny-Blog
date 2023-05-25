@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from "react-redux"
-import { addTodo, loadTodos, selectTodos } from "../../Store/todos.slice"
+import { TODOS_FEATURE_KEY, addTodo, loadTodos } from "../../Store/todos.slice"
 import { useEffect } from "react"
 
 function Main() {
   const dispatch = useDispatch()
-  const todos = useSelector(selectTodos)
+  const todos = useSelector(state => state[TODOS_FEATURE_KEY].entities)
   useEffect(() => {
     dispatch(loadTodos("http://localhost:3001/todos"))
   }, [])
@@ -14,7 +14,7 @@ function Main() {
         添加任务
       </button>
       <ul className="todo-list">
-        {todos.map(todo => (
+        {Object.values(todos).map(todo => (
           <li key={todo.cid}>
             <div className="view">
               <input className="toggle" type="checkbox" />

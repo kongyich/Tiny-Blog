@@ -1,24 +1,25 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit'
 
 export const TODOS_FEATURE_KEY = 'todos'
+
+const todosAdapter = createEntityAdapter()
 
 const loadTodos = createAsyncThunk('todos.loadTodos', (payload) => axios.get(payload).then(res => res.data))
 
 const { reducer: TodosReducer, actions } = createSlice({
   name: TODOS_FEATURE_KEY,
-  initialState: [],
+  initialState: todosAdapter.getInitialState(),
   reducers: {
     setTodos: (state, action) => {
-      action.payload.forEach(todo => {
-        state.push(todo)
-      })
+      // action.payload.forEach(todo => {
+      //   state.push(todo)
+      // })
+      todosAdapter.addMany(state, action.payload)
     },
-    // addTodo: (state, action) => {
-    //   state.push(action.payload)
-    // },
     addTodo: {
       reducer: (state, action) => {
-        state.push(action.payload)
+        // state.push(action.payload)
+        todosAdapter.addOne(state, action.payload)
       },
       prepare: todo => {
         return { 
@@ -33,7 +34,8 @@ const { reducer: TodosReducer, actions } = createSlice({
   extraReducers: {
     [loadTodos.pending]: (state, action) => {}
     [loadTodos.fulfilled]: (state, action) => {
-      action.payload.forEach(todo => state.push(todo))
+      todosAdapter.addMany(state, action.payload)
+      // action.payload.forEach(todo => state.push(todo))
     }
   }
 })
