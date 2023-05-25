@@ -10,17 +10,19 @@ const { reducer: TodosReducer, actions } = createSlice({
   name: TODOS_FEATURE_KEY,
   initialState: todosAdapter.getInitialState(),
   reducers: {
-    setTodos: (state, action) => {
-      // action.payload.forEach(todo => {
-      //   state.push(todo)
-      // })
-      todosAdapter.addMany(state, action.payload)
-    },
+    setTodos: todosAdapter.addMany,
+    // setTodos: (state, action) => {
+    //   // action.payload.forEach(todo => {
+    //   //   state.push(todo)
+    //   // })
+    //   todosAdapter.addMany(state, action.payload)
+    // },
     addTodo: {
-      reducer: (state, action) => {
-        // state.push(action.payload)
-        todosAdapter.addOne(state, action.payload)
-      },
+      reducer: todosAdapter.addOne,
+      // reducer: (state, action) => {
+      //   // state.push(action.payload)
+      //   todosAdapter.addOne(state, action.payload)
+      // },
       prepare: todo => {
         return { 
           payload: {
@@ -32,11 +34,12 @@ const { reducer: TodosReducer, actions } = createSlice({
     }
   },
   extraReducers: {
-    [loadTodos.pending]: (state, action) => {}
-    [loadTodos.fulfilled]: (state, action) => {
-      todosAdapter.addMany(state, action.payload)
-      // action.payload.forEach(todo => state.push(todo))
-    }
+    [loadTodos.pending]: (state, action) => {},
+    [loadTodos.fulfilled]: todosAdapter.addMany
+    // [loadTodos.fulfilled]: (state, action) => {
+    //   todosAdapter.addMany(state, action.payload)
+    //   // action.payload.forEach(todo => state.push(todo))
+    // }
   }
 })
 
