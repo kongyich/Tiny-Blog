@@ -2,9 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 export const TODOS_FEATURE_KEY = 'todos'
 
-const loadTodos = createAsyncThunk('todos.loadTodos', (payload, thunkAPI) => {
-  axios.get(payload).then(res => thunkAPI.dispatch(setTodos(res.data)))
-})
+const loadTodos = createAsyncThunk('todos.loadTodos', (payload) => axios.get(payload).then(res => res.data))
 
 const { reducer: TodosReducer, actions } = createSlice({
   name: TODOS_FEATURE_KEY,
@@ -30,6 +28,12 @@ const { reducer: TodosReducer, actions } = createSlice({
           } 
         }
       }
+    }
+  },
+  extraReducers: {
+    [loadTodos.pending]: (state, action) => {}
+    [loadTodos.fulfilled]: (state, action) => {
+      action.payload.forEach(todo => state.push(todo))
     }
   }
 })
