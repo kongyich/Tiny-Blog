@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, createEntityAdapter, createSelector } from '@reduxjs/toolkit'
 
 export const TODOS_FEATURE_KEY = 'todos'
 
@@ -42,6 +42,10 @@ const { reducer: TodosReducer, actions } = createSlice({
     // }
   }
 })
+
+const = { selectAll } = todosAdapter.getSelectors()
+
+export const selectTodos = createSelector(state => state[TODOS_FEATURE_KEY], selectAll)
 
 export const { addTodo, setTodos } = actions
 export default TodosReducer
